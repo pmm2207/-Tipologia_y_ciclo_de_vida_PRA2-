@@ -1,10 +1,22 @@
 ---
 title: "Practica 2"
-author: "Macarena Palomares, Pablo"
+author: "Macarena Palomares, Pablo Moreno"
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    highlight: zenburn
+    toc: yes
+    keep_tex: yes
   word_document: default
-  pdf_document: default
+  html_document:
+    highlight: default
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+editor_options:
+  markdown:
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -27,7 +39,7 @@ if(!require('ROCR')) install.packages('ROCR'); library(ROCR)
 ```
 
 # Lectura del fichero y preparación de los datos
-Leed el fichero gpa.csv y guardad los datos en un objeto denominado gpa. A continuación, verificad el tipo de cada variable. ¿Qué variables son de tipo numérico? ¿Qué variables son de tipo cualitativo?
+
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
 path = 'winequality-red.csv'
@@ -41,36 +53,186 @@ head(data_wine)
 ```
 
 Nuestros datos tienen 1599 observaciones de 12 variables.
+
+
+# Limpieza de los datos
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+# Reemplazar espacios vacios en los nombres de columnas
+names(data_wine) <- gsub(" ", "_", names(data_wine))
+```
+
+- ¿Los datos contienen ceros o elementos vacíos?
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+sum(is.na(data_wine))
+```
+Los datos no contienen valores NA.
+Vemos que ocurre con los valores 0:
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+sum(data_wine[,]==0)
+```
+Tenemos 132 valores a 0.
+Vemos la distribución por columnas de estos valores:
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+apply(X = data_wine[,1:12] == 0, MARGIN = 2, FUN = sum)
+```
+Los 132 valores a 0 se encuentran en la columna **citric_acid**.
+
+Vemos la distribución de valores 0 de la variable **citric_acid** con respecto a los niveles de calidad del vino:
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+valores_0 <-data_wine[data_wine$citric_acid==0,]
+mytable<-table(valores_0$quality)
+kable(mytable, digits=5) %>%
+  kable_styling(full_width = T) %>%
+  column_spec(col = 1, background="steelblue", bold=T, color="white") %>%
+  row_spec(row = 0,color="blue")
+```
+
+Valores extremos para cada variable:
+
+- Fixed acidity:
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$`fixed acidity`)
+g_caja<-boxplot(data_wine$fixed_acidity~data_wine$quality ,main="fixed acidity vs quality", xlab="quality", ylab="fixed acidity", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+- Volatile acidity:
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$volatile_acidity )
+g_caja<-boxplot(data_wine$volatile_acidity~data_wine$quality ,main="volatile acidity vs quality", xlab="quality", ylab="volatile acidity", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+- Citric acid:
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$citric_acid )
+g_caja<-boxplot(data_wine$citric_acid~data_wine$quality ,main="citric acid vs quality", xlab="quality", ylab="citric acid", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+- Residual sugar:
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$residual_sugar)
+g_caja<-boxplot(data_wine$residual_sugar~data_wine$quality ,main="residual sugar vs quality", xlab="quality", ylab="residual sugar", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+- Chlorides :
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$chlorides )
+g_caja<-boxplot(data_wine$chlorides~data_wine$quality ,main="chlorides vs quality", xlab="quality", ylab="chlorides", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+- Free sulfur dioxide :
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$free_sulfur_dioxide )
+g_caja<-boxplot(data_wine$free_sulfur_dioxide~data_wine$quality ,main="free sulfur dioxide vs quality", xlab="quality", ylab="free sulfur dioxide", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+- Total sulfur dioxide :
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$total_sulfur_dioxide )
+g_caja<-boxplot(data_wine$total_sulfur_dioxide~data_wine$quality ,main="total sulfur dioxide vs quality", xlab="quality", ylab="total sulfur dioxide", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+- Density :
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$density )
+g_caja<-boxplot(data_wine$density~data_wine$quality ,main="density vs quality", xlab="quality", ylab="density", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+- PH :
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$pH )
+g_caja<-boxplot(data_wine$pH~data_wine$quality ,main="pH vs quality", xlab="quality", ylab="pH", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+- Sulphates :
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$sulphates )
+g_caja<-boxplot(data_wine$sulphates~data_wine$quality ,main="sulphates vs quality", xlab="quality", ylab="sulphates", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+- Sulphates :
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+summary(data_wine$alcohol )
+g_caja<-boxplot(data_wine$alcohol~data_wine$quality ,main="alcohol vs quality", xlab="quality", ylab="alcohol", col=hcl.colors(length(mytable), "Spectral"))
+valores_outlier<-g_caja$out
+g_caja
+#outliers
+print(valores_outlier)
+```
+
+# Análisis de los datos
+
 Analizamos la distribución de las variables:
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-hist(data_wine$`fixed acidity`, prob = TRUE,
+hist(data_wine$fixed_acidity, prob = TRUE,
      main = "Fixed acidity", ylab = "Densidad", col="grey",xlab="Fixed acidity")
-x <- seq(min(data_wine$`fixed acidity`), max(data_wine$`fixed acidity`), length = 40)
-f <- dnorm(x, mean = mean(data_wine$`fixed acidity`), sd = sd(data_wine$`fixed acidity`))
+x <- seq(min(data_wine$fixed_acidity), max(data_wine$fixed_acidity), length = 40)
+f <- dnorm(x, mean = mean(data_wine$fixed_acidity), sd = sd(data_wine$fixed_acidity))
 lines(x, f, col = "red", lwd = 2)
 ```
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-hist(data_wine$`volatile acidity` , prob = TRUE,
+hist(data_wine$volatile_acidity , prob = TRUE,
      main = "Volatile acidity", ylab = "Densidad", col='grey',xlab="Volatile acidity")
-x <- seq(min(data_wine$`volatile acidity`), max(data_wine$`volatile acidity`), length = 40)
-f <- dnorm(x, mean = mean(data_wine$`volatile acidity`), sd = sd(data_wine$`volatile acidity` ))
+x <- seq(min(data_wine$volatile_acidity), max(data_wine$volatile_acidity), length = 40)
+f <- dnorm(x, mean = mean(data_wine$volatile_acidity), sd = sd(data_wine$volatile_acidity ))
 lines(x, f, col = "red", lwd = 2)
 
 ```
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-hist(data_wine$`citric acid` , prob = TRUE,
+hist(data_wine$citric_acid , prob = TRUE,
      main = "Citric acid", ylab = "Densidad", col='grey',xlab="Citric acid")
-x <- seq(min(data_wine$`citric acid`), max(data_wine$`citric acid`), length = 40)
-f <- dnorm(x, mean = mean(data_wine$`citric acid`), sd = sd(data_wine$`citric acid`))
+x <- seq(min(data_wine$citric_acid), max(data_wine$citric_acid), length = 40)
+f <- dnorm(x, mean = mean(data_wine$citric_acid), sd = sd(data_wine$citric_acid))
 lines(x, f, col = "red", lwd = 2)
 
 ```
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-hist(data_wine$`residual sugar` , prob = TRUE,
+hist(data_wine$residual_sugar , prob = TRUE,
      main = "Residual sugar", ylab = "Densidad", col='grey',xlab="Residual sugar")
-x <- seq(min(data_wine$`residual sugar`), max(data_wine$`residual sugar`), length = 40)
-f <- dnorm(x, mean = mean(data_wine$`residual sugar`), sd = sd(data_wine$`residual sugar`))
+x <- seq(min(data_wine$residual_sugar), max(data_wine$residual_sugar), length = 40)
+f <- dnorm(x, mean = mean(data_wine$residual_sugar), sd = sd(data_wine$residual_sugar))
 lines(x, f, col = "red", lwd = 2)
 
 ```
@@ -82,18 +244,18 @@ f <- dnorm(x, mean = mean(data_wine$chlorides), sd = sd(data_wine$chlorides))
 lines(x, f, col = "red", lwd = 2)
 ```
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-hist(data_wine$`free sulfur dioxide` , prob = TRUE,
+hist(data_wine$free_sulfur_dioxide , prob = TRUE,
      main = "Free sulfur dioxide", ylab = "Densidad", col='grey',xlab="Free sulfur dioxide")
-x <- seq(min(data_wine$`free sulfur dioxide`), max(data_wine$`free sulfur dioxide`), length = 40)
-f <- dnorm(x, mean = mean(data_wine$`free sulfur dioxide`), sd = sd(data_wine$`free sulfur dioxide`))
+x <- seq(min(data_wine$free_sulfur_dioxide), max(data_wine$free_sulfur_dioxide), length = 40)
+f <- dnorm(x, mean = mean(data_wine$free_sulfur_dioxide), sd = sd(data_wine$free_sulfur_dioxide))
 lines(x, f, col = "red", lwd = 2)
 
 ```
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-hist(data_wine$`total sulfur dioxide` , prob = TRUE,
+hist(data_wine$total_sulfur_dioxide , prob = TRUE,
      main = "Total sulfur dioxide", ylab = "Densidad", col='grey',xlab="Total sulfur dioxide")
-x <- seq(min(data_wine$`total sulfur dioxide`), max(data_wine$`total sulfur dioxide`), length = 40)
-f <- dnorm(x, mean = mean(data_wine$`total sulfur dioxide`), sd = sd(data_wine$`total sulfur dioxide`))
+x <- seq(min(data_wine$total_sulfur_dioxide), max(data_wine$total_sulfur_dioxide), length = 40)
+f <- dnorm(x, mean = mean(data_wine$total_sulfur_dioxide), sd = sd(data_wine$total_sulfur_dioxide))
 lines(x, f, col = "red", lwd = 2)
 
 ```
@@ -150,7 +312,7 @@ legend(1, 0.7, legend = names(mytable), cex=0.7, yjust=0.2, xjust = -0.1,
        fill = hcl.colors(length(mytable), "Spectral")) 
 
 ```
-Vamos a intentar buscar una correlación entre la calidad del vino (variable uality) y las distintas variables del juego de datos:
+Vamos a intentar buscar una correlación entre la calidad del vino (variable quality) y las distintas variables del juego de datos:
 
 ```{r message= FALSE, warning=FALSE}
 histList2<- vector('list', ncol(data_wine))
@@ -168,185 +330,15 @@ multiplot(plotlist = histList2, cols =3 )
 ```
 
 Generamos la matriz de correlaciones:
-```{r message= FALSE, warning=FALSE}
-factores= data_wine
-corr <- (cor(factores))
-
-panel.cor <- function(x, y, digits=2, prefix="", cex.cor)
-{
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y))
-  txt <- format(c(r, 0.123456789), digits=digits)[1]
-  txt <- paste(prefix, txt, sep="")
-  if(missing(cex.cor)) cex <- 0.8/strwidth(txt)
-  text(0.5, 0.5, txt, cex = cex * r)
-}
-panel.hist <- function(x, ...)
-{
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(usr[1:2], 0, 1.5) )
-  h <- hist(x, plot = FALSE)
-  breaks <- h$breaks; nB <- length(breaks)
-  y <- h$counts; y <- y/max(y)
-  rect(breaks[-nB], 0, breaks[-1], y, col="dodgerblue2", ...)
-}
-panel.reg <- function (x, y) 
-{
-  points(x, y, pch=20)
-  abline(lm(y ~ x), lwd=2, col='dodgerblue2')
-}
-pairs(factores,
-      upper.panel = panel.reg,
-      diag.panel = panel.hist,
-      lower.panel = panel.cor)
-
-```
-
-- ¿Los datos contienen ceros o elementos vacíos?
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-sum(is.na(data_wine))
-
-```
-Los datos no contienen valores NA.
-Vemos que ocurre con los valores 0:
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-sum(data_wine[,]==0)
-```
-Tenemos 132 valores a 0.
-Vemos la distribución por columnas de estos valores:
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-apply(X = data_wine[,1:12] == 0, MARGIN = 2, FUN = sum)
-```
-Los 132 valores a 0 se encuentran en la columna **citric acid**.
-
-Vemos la distribución de valores 0 de la variable **citric acid** con respecto a los niveles de calidad del vino:
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-valores_0 <-data_wine[data_wine$`citric acid`==0,]
-mytable<-table(valores_0$quality)
-kable(mytable, digits=5) %>%
-  kable_styling(full_width = T) %>%
-  column_spec(col = 1, background="steelblue", bold=T, color="white") %>%
-  row_spec(row = 0,color="blue")
-```
-- Valores extremos para cada variable:
-- Fixed acidity:
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$`fixed acidity`)
-g_caja<-boxplot(data_wine$`fixed acidity`~data_wine$quality ,main="fixed acidity vs quality", xlab="quality", ylab="fixed acidity", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-- Volatile acidity:
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$`volatile acidity` )
-g_caja<-boxplot(data_wine$`volatile acidity`~data_wine$quality ,main="volatile acidity vs quality", xlab="quality", ylab="volatile acidity", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-
-- Citric acid:
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$`citric acid` )
-g_caja<-boxplot(data_wine$`citric acid`~data_wine$quality ,main="citric acid vs quality", xlab="quality", ylab="citric acid", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-- Residual sugar:
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$`residual sugar` )
-g_caja<-boxplot(data_wine$`residual sugar`~data_wine$quality ,main="residual sugar vs quality", xlab="quality", ylab="residual sugar", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-- Chlorides :
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$chlorides )
-g_caja<-boxplot(data_wine$chlorides~data_wine$quality ,main="chlorides vs quality", xlab="quality", ylab="chlorides", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-
-- Free sulfur dioxide :
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$`free sulfur dioxide` )
-g_caja<-boxplot(data_wine$`free sulfur dioxide`~data_wine$quality ,main="free sulfur dioxide vs quality", xlab="quality", ylab="free sulfur dioxide", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-
-- Total sulfur dioxide :
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$`total sulfur dioxide` )
-g_caja<-boxplot(data_wine$`total sulfur dioxide`~data_wine$quality ,main="total sulfur dioxide vs quality", xlab="quality", ylab="total sulfur dioxide", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-
-- Density :
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$density )
-g_caja<-boxplot(data_wine$density~data_wine$quality ,main="density vs quality", xlab="quality", ylab="density", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-
-- PH :
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$pH )
-g_caja<-boxplot(data_wine$pH~data_wine$quality ,main="pH vs quality", xlab="quality", ylab="pH", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-
-- Sulphates :
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$sulphates )
-g_caja<-boxplot(data_wine$sulphates~data_wine$quality ,main="sulphates vs quality", xlab="quality", ylab="sulphates", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
-```
-
-- Sulphates :
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$alcohol )
-g_caja<-boxplot(data_wine$alcohol~data_wine$quality ,main="alcohol vs quality", xlab="quality", ylab="alcohol", col=hcl.colors(length(mytable), "Spectral"))
-valores_outlier<-g_caja$out
-g_caja
-#outliers
-print(valores_outlier)
+# Gráfico de correlaciones
+corrplot(cor(data_wine))
 ```
 
 
-```{r}
-# Reemplazar espacios vacios
-names(data_wine) <- gsub(" ", "_", names(data_wine))
-```
 
+Comprobamos la normalidad y homegeneidad de la varianza
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
 # Test de normalidad
@@ -373,23 +365,28 @@ data_wine <- subset(data_wine, select= -c(quality_factor))
 
 
 
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-# Gráfico de correlaciones
-corrplot(cor(data_wine))
-```
+Contruimos modelos de minería con los que aplicar métodos de análisis
 
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
 # Modelo de regresión lineal simple con la variable con mayor correlacion
 model_1 <- lm(quality ~ alcohol, data = data_wine)
 summary(model_1)
+plot(data_wine$alcohol, data_wine$quality, xlab="alcohol", ylab="quality")
+abline(model_1)
 ```
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
 # Modelo de regresión lineal multiple con las variables con mayores correlaciones
 model_2 <- lm(quality ~ alcohol + volatile_acidity + citric_acid + sulphates, data = data_wine)
 summary(model_2)
+avPlots(model_2)
 ```
+
+
+
+
+Construimos un modelo de clasificación de tipo random forest
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
 # Pasamos la variable respuesta a binario, 0 si mala calidad y 1 si buena calidad
@@ -416,6 +413,8 @@ auc <- performance(perf, "auc")
 pred3 <- performance(perf, "tpr","fpr")
 plot(pred3,main="ROC Curve for Random Forest",col=2,lwd=2)
 abline(a=0,b=1,lwd=2,lty=2,col="gray")
+
+cat("AUC:", auc@y.values[[1]])
 ```
 
 
