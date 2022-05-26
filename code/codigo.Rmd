@@ -312,6 +312,30 @@ legend(1, 0.7, legend = names(mytable), cex=0.7, yjust=0.2, xjust = -0.1,
        fill = hcl.colors(length(mytable), "Spectral")) 
 
 ```
+
+Comprobamos la normalidad y homegeneidad de la varianza
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+# Test de normalidad
+apply(data_wine,2,shapiro.test)
+```
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+# Test de homocedasticidad
+data_wine$quality_factor <- factor(data_wine$quality)
+leveneTest(data = data_wine, fixed_acidity ~ quality_factor)
+leveneTest(data = data_wine, volatile_acidity ~ quality_factor)
+leveneTest(data = data_wine, citric_acid ~ quality_factor)
+leveneTest(data = data_wine, residual_sugar ~ quality_factor)
+leveneTest(data = data_wine, chlorides ~ quality_factor)
+leveneTest(data = data_wine, free_sulfur_dioxide ~ quality_factor)
+leveneTest(data = data_wine, total_sulfur_dioxide ~ quality_factor)
+leveneTest(data = data_wine, density ~ quality_factor)
+leveneTest(data = data_wine, pH ~ quality_factor)
+leveneTest(data = data_wine, sulphates ~ quality_factor)
+leveneTest(data = data_wine, alcohol ~ quality_factor)
+data_wine <- subset(data_wine, select= -c(quality_factor))
+```
 Vamos a intentar buscar una correlación entre la calidad del vino (variable quality) y las distintas variables del juego de datos:
 
 ```{r message= FALSE, warning=FALSE}
@@ -338,34 +362,12 @@ corrplot(cor(data_wine))
 
 
 
-Comprobamos la normalidad y homegeneidad de la varianza
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-# Test de normalidad
-apply(data_wine,2,shapiro.test)
-```
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-# Test de homocedasticidad
-data_wine$quality_factor <- factor(data_wine$quality)
-leveneTest(data = data_wine, fixed_acidity ~ quality_factor)
-leveneTest(data = data_wine, volatile_acidity ~ quality_factor)
-leveneTest(data = data_wine, citric_acid ~ quality_factor)
-leveneTest(data = data_wine, residual_sugar ~ quality_factor)
-leveneTest(data = data_wine, chlorides ~ quality_factor)
-leveneTest(data = data_wine, free_sulfur_dioxide ~ quality_factor)
-leveneTest(data = data_wine, total_sulfur_dioxide ~ quality_factor)
-leveneTest(data = data_wine, density ~ quality_factor)
-leveneTest(data = data_wine, pH ~ quality_factor)
-leveneTest(data = data_wine, sulphates ~ quality_factor)
-leveneTest(data = data_wine, alcohol ~ quality_factor)
-data_wine <- subset(data_wine, select= -c(quality_factor))
-```
 
 
 
 
-Contruimos modelos de minería con los que aplicar métodos de análisis
+
+Construimos modelos de minería con los que aplicar métodos de análisis
 
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
