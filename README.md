@@ -8,6 +8,8 @@ Macarena Palomares Pastor,
 Pablo Moreno Martínez
 
 # ESTRUCTURA:
-*  code: Directorio con el fichero fuentes.py que contiene el código utilizado
-*  data: Directorio con el CSV generado al ejecutar el código python
-*  doc: Directorio con el PDF de la memoria del proyecto
+*  code: Directorio de los ficheros que contienen el código utilizado
+*  data: Directorio con el fichero csv de los datos originales y el fichero csv con los datos finales analizados
+*  doc: Directorio con el documento que responde a las preguntas del proyecto
+*  
+# Drive del vídeo de presentación
