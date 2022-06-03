@@ -3,17 +3,17 @@ title: "Practica 2"
 author: "Macarena Palomares, Pablo Moreno"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    highlight: zenburn
-    toc: yes
-    keep_tex: yes
-  word_document: default
   html_document:
     highlight: default
     number_sections: yes
     theme: cosmo
     toc: yes
     toc_depth: 2
+  pdf_document:
+    highlight: zenburn
+    toc: yes
+    keep_tex: yes
+  word_document: default
 editor_options:
   markdown:
     wrap: 72
@@ -54,10 +54,6 @@ head(data_wine)
 
 Nuestros datos tienen 1599 observaciones de 12 variables cuantiativas, siendo quality la única variable discreta y el resto continuas.
 
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-# Reemplazar espacios vacios en los nombres de columnas
-names(data_wine) <- gsub(" ", "_", names(data_wine))
-```
 # Resumen descriptivo
 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
@@ -101,6 +97,12 @@ Posee valores atípicos máximos. Él rango dónde se encuentran la mayoria de v
 
 
 # Limpieza de los datos
+
+
+```{r warning=FALSE, cache=FALSE, message=FALSE}
+# Reemplazar espacios vacios en los nombres de columnas
+names(data_wine) <- gsub(" ", "_", names(data_wine))
+```
 
 - ¿Los datos contienen ceros o elementos vacíos?
 
