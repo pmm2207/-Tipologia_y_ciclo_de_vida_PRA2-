@@ -128,7 +128,7 @@ Vemos la distribución de valores 0 de la variable **citric_acid** con respecto 
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
 valores_0 <-data_wine[data_wine$citric_acid==0,]
 mytable<-table(valores_0$quality)
-kable(mytable, digits=5) %>%
+kable(mytable, digits=5, caption="Distribución de valores 0 de la variable citric_acid") %>%
   kable_styling(full_width = T) %>%
   column_spec(col = 1, background="steelblue", bold=T, color="white") %>%
   row_spec(row = 0,color="blue")

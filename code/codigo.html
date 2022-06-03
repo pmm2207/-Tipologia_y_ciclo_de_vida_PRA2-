@@ -308,11 +308,14 @@ names(data_wine) &lt;- gsub(&quot; &quot;, &quot;_&quot;, names(data_wine))</cod
 <p>Vemos la distribución de valores 0 de la variable <strong>citric_acid</strong> con respecto a los niveles de calidad del vino:</p>
 <pre class="r"><code>valores_0 &lt;-data_wine[data_wine$citric_acid==0,]
 mytable&lt;-table(valores_0$quality)
-kable(mytable, digits=5) %&gt;%
+kable(mytable, digits=5, caption=&quot;Distribución de valores 0 de la variable citric_acid&quot;) %&gt;%
   kable_styling(full_width = T) %&gt;%
   column_spec(col = 1, background=&quot;steelblue&quot;, bold=T, color=&quot;white&quot;) %&gt;%
   row_spec(row = 0,color=&quot;blue&quot;)</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Distribución de valores 0 de la variable citric_acid
+</caption>
 <thead>
 <tr>
 <th style="text-align:left;color: blue !important;">
