@@ -60,89 +60,44 @@ names(data_wine) <- gsub(" ", "_", names(data_wine))
 ```
 # Resumen descriptivo
 
-- Fixed acidity: 
-
 ```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$fixed_acidity)
-boxplot(data_wine$fixed_acidity, col="orange3")
+summary(data_wine)
 ```
+- Fixed acidity: 
 El valor mínimo de la variable es 4.60, el máximo 15.90 y la media se sitúa en 8.32. No continen valores vacíos ni valores 0.
 Sí posee valores atípicos en los valores máximos. Él rango dónde se encuentran la mayoria de valores se sitúa entre 7.10 y 9.20.
 
-
 - Volatile acidity: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$volatile_acidity)
-boxplot(data_wine$volatile_acidity, col="orange3")
-```
 El valor mínimo de la variable es 0.12, el máximo 1.58 y la media se sitúa en 0.53. No contine valores vacíos ni valores 0.
 Sí posee valores atípicos en los valores máximos. Él rango dónde se encuentran la mayoria de valores se sitúa entre 0.39 y 0.64
 
 - Citric acid: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$citric_acid)
-boxplot(data_wine$citric_acid, col="orange3")
-```
 El valor mínimo de la variable es 0, el máximo 1 y la media se sitúa en 0.53. No contine valores vacíos, pero sí valores 0.
 Posee 1 valor atípico máximo. Él rango dónde se encuentran la mayoria de valores se sitúa entre 0.09 y 0.42
 
-
 - Residual sugar: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$residual_sugar)
-boxplot(data_wine$residual_sugar, col="orange3")
-```
 El valor mínimo de la variable es 0.9, el máximo 15.5 y la media se sitúa en 2.54. No contine valores vacíos, pero sí valores 0.
 Posee 1 valor atípico máximo. Él rango dónde se encuentran la mayoria de valores se sitúa entre 1.9 y 2.6
 
-- Chlorides_: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$chlorides )
-boxplot(data_wine$chlorides, col="orange3")
-```
+- Chlorides: 
 El valor mínimo de la variable es 0.012, el máximo 0.61 y la media se sitúa en 0.087. No contine valores vacíos ni valores 0.
 Posee valores atípicos máximos. Él rango dónde se encuentran la mayoria de valores se sitúa entre 0.07 y 0.09
 
 - Free sulfur dioxide: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$free_sulfur_dioxide)
-boxplot(data_wine$free_sulfur_dioxide, col="orange3")
-```
 El valor mínimo de la variable es 1, el máximo 72 y la media se sitúa en 15.87. No contine valores vacíos ni valores 0.
 Posee valores atípicos máximos. Él rango dónde se encuentran la mayoria de valores se sitúa entre 7 y 21.
 
 - Total sulfur dioxide: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$total_sulfur_dioxide)
-boxplot(data_wine$total_sulfur_dioxide, col="orange3")
-```
 El valor mínimo de la variable es 6, el máximo 289 y la media se sitúa en 46.47. No contine valores vacíos ní valores 0.
 Posee valores atípicos máximos. Él rango dónde se encuentran la mayoria de valores se sitúa entre 22 y 62
 
 - Density: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$density)
-boxplot(data_wine$density, col="orange3")
-```
 El valor mínimo de la variable es 0.99, el máximo 1.00 y la media se sitúa en 0.9967. No contine valores vacíos ní valores 0.
 Posee valores atípicos máximos y mínimos. Él rango dónde se encuentran la mayoria de valores se sitúa entre 0.9956 y 0.9978.
 
 - Alcohol: 
-
-```{r warning=FALSE, cache=FALSE, message=FALSE}
-summary(data_wine$alcohol)
-boxplot(data_wine$alcohol, col="orange3")
-```
 El valor mínimo de la variable es 8.4, el máximo 14.9 y la media se sitúa en 10.42. No contine valores vacíos ní valores 0.
 Posee valores atípicos máximos. Él rango dónde se encuentran la mayoria de valores se sitúa entre 9.5 y 11.10
-
 
 
 # Limpieza de los datos
@@ -445,13 +400,6 @@ Generamos la matriz de correlaciones:
 corrplot(cor(data_wine))
 ```
 
-
-
-
-
-
-
-
 Construimos modelos de minería con los que aplicar métodos de análisis
 
 
@@ -469,9 +417,6 @@ model_2 <- lm(quality ~ alcohol + volatile_acidity + citric_acid + sulphates, da
 summary(model_2)
 avPlots(model_2)
 ```
-
-
-
 
 Construimos un modelo de clasificación de tipo random forest
 
